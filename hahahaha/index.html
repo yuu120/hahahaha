@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>60 秒倒數 → 顯示照片</title>
+  <style>
+    :root {
+      --bg: #0f172a;      /* 背景色 */
+      --fg: #e2e8f0;      /* 前景文字色 */
+      --accent: #38bdf8;  /* 強調色 */
+    }
+    * { box-sizing: border-box; }
+    html, body {
+      height: 100%;
+      margin: 0;
+      background: var(--bg);
+      color: var(--fg);
+      font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", sans-serif;
+    }
+    /* 置中容器 */
+    .center {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+    }
+    /* 內容區塊 */
+    #stage {
+      text-align: center;
+    }
+    #message {
+      font-size: 28px;
+      line-height: 1.4;
+      margin-bottom: 12px;
+      letter-spacing: 0.02em;
+    }
+    #countdown {
+      font-variant-numeric: tabular-nums;
+      font-weight: 700;
+      font-size: 56px;
+      color: var(--accent);
+    }
+    /* 照片區塊預設隱藏，倒數完顯示並淡入 */
+    #photo {
+      max-width: min(92vw, 960px);
+      width: 100%;
+      height: auto;
+      border-radius: 12px;
+      box-shadow: 0 10px 30px rgba(0,0,0,.35);
+      opacity: 0;
+      transform: translateY(6px);
+      transition: opacity .6s ease, transform .6s ease;
+      display: none;
+    }
+    #photo.show {
+      display: block;
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* 演出淡出（可選） */
+    .fade-out {
+      opacity: 0;
+      transform: translateY(-6px);
+      transition: opacity .4s ease, transform .4s ease;
+    }
+  </style>
+</head>
+<body>
+  <main class="center">
+    <!-- 倒數階段 -->
+    <section id="stage" aria-live="polite">
+      <div id="message">準備好了嗎？倒數 60 秒後會出現照片。</div>
+      <div id="countdown">60</div>
+    </section>
+
+    <!-- 照片 -->
+    <!-- 請把 photo.jpg 換成你的檔名，並放在同一資料夾 -->
+    <img id="photo" src="image1.png" alt="倒數結束後顯示的照片" />
+  </main>
+
+  <script>
+    // 可調整的參數
+    const DURATION_SECONDS = 10; // 想改時間就調這裡
+    const MESSAGE_TEXT = "準備好了嗎？倒數 60 秒後會出現照片。"; // 想改文字就改這裡
+    const IMAGE_SELECTOR = "#photo";
+
+    const stageEl = document.getElementById("stage");
+    const msgEl = document.getElementById("message");
+    const countdownEl = document.getElementById("countdown");
+    const photoEl = document.querySelector(IMAGE_SELECTOR);
+
+    // 更新訊息（若你改了秒數，這行會同步顯示）
+    msgEl.textContent = `準備好了嗎？倒數 ${DURATION_SECONDS} 好戲即將開場。`;
+
+    // 照片預先載入，避免跳出時白屏
+    const preload = new Image();
+    preload.src = photoEl.src;
+
+    let remain = DURATION_SECONDS;
+    countdownEl.textContent = remain;
+
+    const timer = setInterval(() => {
+      remain -= 1;
+      countdownEl.textContent = remain;
+
+      if (remain <= 0) {
+        clearInterval(timer);
+        // 淡出倒數階段
+        stageEl.classList.add("fade-out");
+        setTimeout(() => {
+          // 隱藏倒數區塊、顯示照片
+          stageEl.style.display = "none";
+          photoEl.classList.add("show");
+        }, 400);
+      }
+    }, 1000);
+  </script>
+</body>
+</html>
