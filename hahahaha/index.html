@@ -93,7 +93,7 @@
     const photoEl = document.querySelector(IMAGE_SELECTOR);
 
     // 更新訊息（若你改了秒數，這行會同步顯示）
-    msgEl.textContent = `準備好了嗎？倒數 ${DURATION_SECONDS} 好戲即將開場。`;
+    msgEl.textContent = `準備好了嗎？倒數 ${DURATION_SECONDS} 秒！好戲即將開場！`;
 
     // 照片預先載入，避免跳出時白屏
     const preload = new Image();
@@ -119,4 +119,5 @@
     }, 1000);
   </script>
 </body>
+
 </html>
